@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom tweaks */
+.btn {
+  @apply bg-cove-water text-white px-4 py-2 rounded hover:bg-blue-700;
+}
+.btn-danger {
+  @apply bg-cove-alert text-white px-4 py-2 rounded hover:bg-red-700;
+}

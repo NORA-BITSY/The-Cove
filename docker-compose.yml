@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    env_file: .env
+    depends_on:
+      - backend
+    networks: [cove]
+    restart: always
+
+  backend:
+    build:
+      context: .           # updated: use repo-root as context
+      dockerfile: backend/Dockerfile   # explicit Dockerfile path
+    env_file: .env
+    volumes:
+      - ./backend/app:/code/app
+    networks: [cove]
+    restart: always
+    command: >
+      sh -c "alembic upgrade head &&
+             gunicorn -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000"
+    environment:
+      WEB_CONCURRENCY: "4"     # Adjust as needed per CPU
+
+  postgres:
+    image: postgres:16-alpine
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [cove]
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    networks: [cove]
+    restart: always
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./certs:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on: [frontend]
+    networks: [cove]
+    restart: always
+
+  media_server:
+    image: airensoft/ovenmediaengine:0.12.6
+    ports:
+      - "1935:1935"
+      - "10000-10005:10000-10005/udp"
+      - "3333:3333"
+    volumes:
+      - ./ovenmediaengine/conf:/opt/ovenmediaengine/bin/conf
+    networks: [cove]
+    restart: always
+
+networks:
+  cove:
+
+volumes:
+  pgdata:

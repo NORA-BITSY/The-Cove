@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+gunicorn
+sqlalchemy
+psycopg2-binary
+pydantic-settings
+python-socketio[asgi]
+alembic
+python-jose
+httpx
+slowapi
+python-json-logger
+prometheus-fastapi-instrumentator
+sentry-sdk
+python-multipart

@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  backend:
+    environment:
+      DATABASE_URL: "${DATABASE_URL}"
+      JWT_SECRET:   "${JWT_SECRET}"
+      FB_APP_ID:    "${FB_APP_ID}"
+      FB_APP_SECRET:"${FB_APP_SECRET}"
+    secrets:
+      - db_password
+  postgres:
+    secrets:
+      - db_password
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt   # This file should be git-ignored.
